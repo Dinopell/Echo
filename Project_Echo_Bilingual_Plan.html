@@ -1,0 +1,1325 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Project Echo — 中英文对照规划书 / Bilingual Planning Document</title>
+  <style>
+    :root {
+      --bg: #0a0a0a;
+      --surface: #141414;
+      --surface2: #1e1e1e;
+      --accent: #c5f82a;
+      --accent2: #4af0c4;
+      --text: #e8e8e8;
+      --text-muted: #888;
+      --border: #2a2a2a;
+      --zh-col: #1a2a0a;
+      --en-col: #0a1a2a;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'PingFang SC', 'SF Pro Text', -apple-system, sans-serif;
+      line-height: 1.7;
+    }
+
+    /* ─── Cover ─── */
+    .cover {
+      background: linear-gradient(135deg, #0a0a0a 0%, #111b00 50%, #001b11 100%);
+      padding: 80px 40px;
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+    .cover::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 50% 0%, rgba(197,248,42,0.08) 0%, transparent 70%);
+    }
+    .cover-tag {
+      display: inline-block;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      font-size: 11px;
+      letter-spacing: 3px;
+      padding: 4px 14px;
+      text-transform: uppercase;
+      margin-bottom: 28px;
+    }
+    .cover h1 {
+      font-size: clamp(28px, 5vw, 52px);
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin-bottom: 12px;
+    }
+    .cover h1 span { color: var(--accent); }
+    .cover-sub {
+      font-size: 14px;
+      color: var(--text-muted);
+      letter-spacing: 2px;
+      margin-bottom: 40px;
+      text-transform: uppercase;
+    }
+    .cover-desc {
+      max-width: 680px;
+      margin: 0 auto 48px;
+      font-size: 16px;
+      color: #aaa;
+      line-height: 1.8;
+    }
+    .cover-badges {
+      display: flex; flex-wrap: wrap; justify-content: center; gap: 12px;
+    }
+    .badge {
+      background: rgba(197,248,42,0.08);
+      border: 1px solid rgba(197,248,42,0.25);
+      color: var(--accent);
+      padding: 6px 18px;
+      font-size: 12px;
+      border-radius: 2px;
+      letter-spacing: 1px;
+    }
+
+    /* ─── Layout ─── */
+    .container { max-width: 1300px; margin: 0 auto; padding: 0 24px; }
+
+    /* ─── TOC ─── */
+    .toc {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      margin: 40px auto;
+      max-width: 900px;
+      padding: 32px 40px;
+    }
+    .toc h2 { font-size: 13px; letter-spacing: 3px; color: var(--accent); text-transform: uppercase; margin-bottom: 20px; }
+    .toc ol { padding-left: 20px; }
+    .toc li { margin: 8px 0; font-size: 14px; color: #bbb; }
+    .toc a { color: var(--accent2); text-decoration: none; }
+    .toc a:hover { text-decoration: underline; }
+
+    /* ─── Section ─── */
+    .section { margin: 60px 0; }
+    .section-header {
+      display: flex; align-items: center; gap: 16px;
+      margin-bottom: 8px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .section-num {
+      width: 36px; height: 36px;
+      background: var(--accent);
+      color: #000;
+      font-weight: 700;
+      font-size: 14px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .section-header h2 { font-size: 22px; font-weight: 600; }
+    .section-sub { font-size: 12px; color: var(--text-muted); letter-spacing: 2px; margin-top: 4px; text-transform: uppercase; }
+
+    /* ─── Bilingual Row ─── */
+    .bi-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2px;
+      margin: 2px 0;
+      border: 1px solid var(--border);
+    }
+    .bi-row.header-row {
+      background: var(--surface2);
+      border-color: var(--accent);
+    }
+    .bi-zh {
+      background: var(--zh-col);
+      padding: 18px 24px;
+      border-right: 1px solid var(--border);
+    }
+    .bi-en {
+      background: var(--en-col);
+      padding: 18px 24px;
+    }
+    .bi-row.header-row .bi-zh,
+    .bi-row.header-row .bi-en {
+      background: var(--surface2);
+      padding: 12px 24px;
+    }
+    .bi-label {
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+    .bi-zh .bi-label { color: rgba(197,248,42,0.6); }
+    .bi-en .bi-label { color: rgba(74,240,196,0.6); }
+    .bi-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+    .bi-en .bi-title { color: var(--accent2); }
+    .bi-body { font-size: 14px; color: #ccc; line-height: 1.8; }
+    .bi-body ul { padding-left: 18px; margin-top: 6px; }
+    .bi-body li { margin: 5px 0; }
+    .bi-body strong { color: var(--text); }
+
+    /* ─── Subsection heading ─── */
+    .sub-heading {
+      grid-column: 1 / -1;
+      background: rgba(197,248,42,0.04);
+      border: 1px solid rgba(197,248,42,0.15);
+      padding: 10px 24px;
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin: 8px 0 0;
+    }
+
+    /* ─── Three-col card ─── */
+    .tri-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      margin: 8px 0;
+    }
+    .tri-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 20px;
+    }
+    .tri-card .icon { font-size: 24px; margin-bottom: 10px; }
+    .tri-card .zh-name { font-size: 15px; font-weight: 600; color: var(--accent); margin-bottom: 4px; }
+    .tri-card .en-name { font-size: 11px; color: var(--accent2); letter-spacing: 1px; margin-bottom: 10px; }
+    .tri-card .desc-zh { font-size: 13px; color: #bbb; line-height: 1.7; margin-bottom: 8px; }
+    .tri-card .desc-en { font-size: 12px; color: #666; line-height: 1.6; font-style: italic; }
+
+    /* ─── Roadmap ─── */
+    .roadmap { display: flex; flex-direction: column; gap: 2px; margin: 8px 0; }
+    .phase {
+      display: grid;
+      grid-template-columns: 120px 1fr 1fr;
+      gap: 2px;
+    }
+    .phase-num {
+      background: rgba(197,248,42,0.1);
+      border: 1px solid rgba(197,248,42,0.3);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 16px 10px;
+      text-align: center;
+    }
+    .phase-num .pn { font-size: 22px; font-weight: 700; color: var(--accent); }
+    .phase-num .pl { font-size: 9px; letter-spacing: 1px; color: var(--text-muted); text-transform: uppercase; margin-top: 2px; }
+    .phase-zh { background: var(--zh-col); border: 1px solid var(--border); padding: 16px 20px; }
+    .phase-en { background: var(--en-col); border: 1px solid var(--border); padding: 16px 20px; }
+    .phase-title-zh { font-size: 14px; font-weight: 600; color: var(--accent); margin-bottom: 6px; }
+    .phase-title-en { font-size: 12px; font-weight: 600; color: var(--accent2); margin-bottom: 6px; letter-spacing: 0.5px; }
+    .phase-body { font-size: 13px; color: #bbb; line-height: 1.7; }
+
+    /* ─── Tech table ─── */
+    .tech-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 8px 0;
+      font-size: 13px;
+    }
+    .tech-table th {
+      background: var(--surface2);
+      color: var(--accent);
+      padding: 10px 16px;
+      text-align: left;
+      border: 1px solid var(--border);
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+    .tech-table td {
+      padding: 10px 16px;
+      border: 1px solid var(--border);
+      color: #ccc;
+      vertical-align: top;
+    }
+    .tech-table tr:nth-child(odd) td { background: var(--surface); }
+    .tech-table tr:nth-child(even) td { background: var(--surface2); }
+    .tech-table .layer { color: var(--accent); font-weight: 600; }
+    .tech-table .tools { color: var(--accent2); font-family: 'SF Mono', monospace; }
+
+    /* ─── Arch diagram ─── */
+    .arch-diagram {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2px;
+      margin: 8px 0;
+    }
+    .arch-block {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 20px;
+    }
+    .arch-block .ab-icon { font-size: 28px; margin-bottom: 8px; }
+    .arch-block .ab-zh { font-size: 14px; font-weight: 600; color: var(--accent); margin-bottom: 4px; }
+    .arch-block .ab-en { font-size: 11px; color: var(--accent2); letter-spacing: 0.5px; margin-bottom: 10px; }
+    .arch-block .ab-desc-zh { font-size: 13px; color: #bbb; line-height: 1.7; margin-bottom: 6px; }
+    .arch-block .ab-desc-en { font-size: 12px; color: #555; line-height: 1.6; font-style: italic; }
+
+    /* ─── Privacy card ─── */
+    .privacy-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2px;
+      margin: 8px 0;
+    }
+    .priv-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 20px;
+    }
+    .priv-card .pc-icon { font-size: 22px; margin-bottom: 8px; }
+    .priv-card .pc-zh { font-size: 14px; font-weight: 600; color: var(--accent); margin-bottom: 4px; }
+    .priv-card .pc-en { font-size: 12px; color: var(--accent2); margin-bottom: 8px; }
+    .priv-card .pc-body-zh { font-size: 13px; color: #bbb; line-height: 1.7; }
+    .priv-card .pc-body-en { font-size: 12px; color: #555; line-height: 1.6; margin-top: 4px; font-style: italic; }
+    .highlight-box {
+      text-align: center;
+      padding: 20px;
+      background: rgba(197,248,42,0.05);
+      border: 1px solid rgba(197,248,42,0.2);
+      margin: 8px 0;
+    }
+    .highlight-box .hl-num { font-size: 36px; font-weight: 700; color: var(--accent); }
+    .highlight-box .hl-zh { font-size: 14px; color: #ccc; margin-top: 4px; }
+    .highlight-box .hl-en { font-size: 11px; color: #555; letter-spacing: 1px; }
+
+    /* ─── Footer ─── */
+    footer {
+      margin-top: 80px;
+      padding: 40px 24px;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      text-align: center;
+    }
+    footer .f-title { font-size: 18px; font-weight: 600; color: var(--accent); margin-bottom: 8px; }
+    footer .f-sub { font-size: 12px; color: var(--text-muted); letter-spacing: 1px; margin-bottom: 16px; }
+    footer .f-links { font-size: 13px; color: #666; }
+    footer .f-links a { color: var(--accent2); text-decoration: none; }
+
+    @media (max-width: 768px) {
+      .bi-row { grid-template-columns: 1fr; }
+      .tri-grid { grid-template-columns: 1fr; }
+      .phase { grid-template-columns: 1fr; }
+      .arch-diagram { grid-template-columns: 1fr; }
+      .privacy-grid { grid-template-columns: 1fr; }
+      .bi-zh { border-right: none; border-bottom: 1px solid var(--border); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ════════════════════  COVER  ════════════════════ -->
+<div class="cover">
+  <div class="cover-tag">Bilingual Planning Document · 中英文对照规划书</div>
+  <h1>项目 <span>Echo</span> / Project <span>Echo</span></h1>
+  <div class="cover-sub">以隐私为先的边缘计算智能伴侣 &nbsp;·&nbsp; Privacy-First Edge-Computing AI Companion</div>
+  <p class="cover-desc">
+    本规划书基于「项目Echo_扩展分布式架构」与「项目Echo_私人记忆的未来」两份核心文档，
+    系统梳理 Echo 项目的核心愿景、系统架构、技术方案、实施路径与预期成果。<br/>
+    <em style="color:#666;">This document synthesizes the two source presentations — "Extended Distributed Architecture" and "The Future of Private Memories" — covering Echo's vision, architecture, technical stack, roadmap, and expected outcomes.</em>
+  </p>
+  <div class="cover-badges">
+    <span class="badge">隐私优先 · Privacy-First</span>
+    <span class="badge">边缘计算 · Edge Computing</span>
+    <span class="badge">本地 AI · Local AI</span>
+    <span class="badge">分布式 P2P · Distributed P2P</span>
+    <span class="badge">开源 · Open Source</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- ─── TOC ─── -->
+  <div class="toc">
+    <h2>目录 / Table of Contents</h2>
+    <ol>
+      <li><a href="#sec1">核心概念与愿景 / Core Concept &amp; Vision</a></li>
+      <li><a href="#sec2">三大功能支柱 / Three Core Pillars</a></li>
+      <li><a href="#sec3">系统架构设计 / System Architecture</a></li>
+      <li><a href="#sec4">技术实现方案与关键技术点 / Technical Implementation &amp; Key Technologies</a></li>
+      <li><a href="#sec5">安全与隐私保障 / Security &amp; Privacy Guarantees</a></li>
+      <li><a href="#sec6">分布式 P2P 网格 / Federated P2P Mesh</a></li>
+      <li><a href="#sec7">RAG 驱动的记忆回想 / RAG-Powered Memory Recall</a></li>
+      <li><a href="#sec8">AI 视觉记忆卡片 / AI Visual Memory Cards</a></li>
+      <li><a href="#sec9">实施路径与阶段性计划 / Implementation Roadmap</a></li>
+      <li><a href="#sec10">预期成果与影响评估 / Expected Outcomes &amp; Impact</a></li>
+    </ol>
+  </div>
+
+  <!-- ════════ 1. VISION ════════ -->
+  <div class="section" id="sec1">
+    <div class="section-header">
+      <div class="section-num">1</div>
+      <div>
+        <div class="section-sub">Section One</div>
+        <h2>核心概念与愿景 / Core Concept &amp; Vision</h2>
+      </div>
+    </div>
+
+    <div class="bi-row header-row">
+      <div class="bi-zh"><div class="bi-label">中文 Chinese</div></div>
+      <div class="bi-en"><div class="bi-label">English 英文</div></div>
+    </div>
+
+    <div class="bi-row">
+      <div class="bi-zh">
+        <div class="bi-title">项目定义</div>
+        <div class="bi-body">
+          Project Echo 是一款<strong>以隐私为先的边缘计算智能伴侣</strong>，旨在陪伴用户一生。
+          其核心使命是将环境之声转化为结构化的智慧，让每一个珍贵瞬间与每一段关系都不再随时间流逝。
+        </div>
+      </div>
+      <div class="bi-en">
+        <div class="bi-title">Project Definition</div>
+        <div class="bi-body">
+          Project Echo is a <strong>privacy-first, edge-computing AI companion</strong> designed for lifelong connection.
+          Its core mission is to transform ambient sound into structured wisdom, ensuring that every precious moment and every meaningful relationship is preserved rather than lost to time.
+        </div>
+      </div>
+    </div>
+
+    <div class="bi-row">
+      <div class="bi-zh">
+        <div class="bi-title">品牌标语</div>
+        <div class="bi-body">
+          <strong>PERSONALIZED AI GUARDIAN</strong>（个性化 AI 守护者）<br/>
+          「数字记忆的灵魂」——项目 Echo 以隐私为先的边缘计算智能伴侣，陪伴一生的连接。
+        </div>
+      </div>
+      <div class="bi-en">
+        <div class="bi-title">Brand Tagline</div>
+        <div class="bi-body">
+          <strong>PERSONALIZED AI GUARDIAN</strong><br/>
+          "The Soul of Digital Memory" — Project Echo, a privacy-first edge-computing AI companion for a lifetime of connection.
+        </div>
+      </div>
+    </div>
+
+    <div class="bi-row">
+      <div class="bi-zh">
+        <div class="bi-title">核心愿景（CORE VISION）</div>
+        <div class="bi-body">
+          <strong>重新发现对话的价值</strong>——将环境之声转化为结构化的智慧，让每一个珍贵瞬间与每一段关系都不再随时间流逝。
+          Echo 不依赖任何第三方云服务，所有数据完全在用户私有硬件上运行，真正实现数字遗产的自主掌控。
+        </div>
+      </div>
+      <div class="bi-en">
+        <div class="bi-title">Core Vision</div>
+        <div class="bi-body">
+          <strong>Rediscover the Value of Conversation</strong> — Transform ambient sound into structured wisdom, ensuring every precious moment and every relationship is never lost to time.
+          Echo operates entirely on user-owned hardware without relying on any third-party cloud service, enabling true autonomy over one's digital legacy.
+        </div>
+      </div>
+    </div>
+
+    <div class="bi-row">
+      <div class="bi-zh">
+        <div class="bi-title">目标受众</div>
+        <div class="bi-body">
+          Echo 面向两类核心用户：<br/>
+          <ul>
+            <li>重视数据隐私、希望长期保存个人记忆的普通用户</li>
+            <li>希望在边缘端探索隐私优先 AI 解决方案的开发者与极客社区</li>
+          </ul>
+        </div>
+      </div>
+      <div class="bi-en">
+        <div class="bi-title">Target Audience</div>
+        <div class="bi-body">
+          Echo targets two core user groups:<br/>
+          <ul>
+            <li>Privacy-conscious individuals who wish to preserve personal memories long-term</li>
+            <li>Developers and geek communities exploring privacy-first AI solutions on edge hardware</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════ 2. THREE PILLARS ════════ -->
+  <div class="section" id="sec2">
+    <div class="section-header">
+      <div class="section-num">2</div>
+      <div>
+        <div class="section-sub">Section Two</div>
+        <h2>三大功能支柱 / Three Core Pillars</h2>
+      </div>
+    </div>
+
+    <div class="tri-grid">
+      <div class="tri-card">
+        <div class="icon">🎙</div>
+        <div class="zh-name">智能聆听</div>
+        <div class="en-name">Intelligent Listening</div>
+        <div class="desc-zh">
+          基于先进的<strong>语音活动检测（VAD）</strong>与<strong>说话人识别（Speaker Diarization）</strong>技术，
+          精准捕捉日常互动的本质内容，实现低功耗音频采集与本地加密（ASR-tiny）。
+        </div>
+        <div class="desc-en">
+          Leverages advanced <strong>Voice Activity Detection (VAD)</strong> and <strong>Speaker Diarization</strong>
+          to precisely capture the essence of daily interactions, with low-power audio capture and local encryption via ASR-tiny.
+        </div>
+      </div>
+      <div class="tri-card">
+        <div class="icon">🕸</div>
+        <div class="zh-name">社交图谱</div>
+        <div class="en-name">Social Graph</div>
+        <div class="desc-zh">
+          基于<strong>互动频率、情感分析与关键话题</strong>，
+          以 Neo4j 图数据库构建动态关系宇宙。
+          移动端采用 D3.js 力导向交互式 UI，支持触摸、缩放与拖拽探索社交生态。
+        </div>
+        <div class="desc-en">
+          Builds a dynamic relationship universe using <strong>interaction frequency, sentiment analysis, and key topics</strong>
+          powered by the Neo4j graph database.
+          Mobile UI leverages a D3.js force-directed interactive graph with touch, zoom, and drag gestures.
+        </div>
+      </div>
+      <div class="tri-card">
+        <div class="icon">✨</div>
+        <div class="zh-name">创意回想</div>
+        <div class="en-name">Creative Recall</div>
+        <div class="desc-zh">
+          运用前沿<strong>本地生成式 AI（Stable Diffusion SDXL/LoRA）</strong>，
+          为由对话情感峰值自动触发的关键记忆生成富有艺术感的视觉明信片，
+          图像原生存放于 MinIO Bucket。
+        </div>
+        <div class="desc-en">
+          Uses cutting-edge <strong>local generative AI (Stable Diffusion SDXL/LoRA)</strong>
+          to create artistic visual postcards for key memories auto-triggered by conversational emotional peaks.
+          Images are natively stored in a MinIO Bucket.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════ 3. ARCHITECTURE ════════ -->
+  <div class="section" id="sec3">
+    <div class="section-header">
+      <div class="section-num">3</div>
+      <div>
+        <div class="section-sub">Section Three</div>
+        <h2>系统架构设计 / System Architecture Design</h2>
+      </div>
+    </div>
+
+    <div class="bi-row">
+      <div class="bi-zh">
+        <div class="bi-title">整体架构理念</div>
+        <div class="bi-body">
+          Echo 采用<strong>控制面与数据面分离</strong>的双层架构设计，
+          全部算力部署于用户私有边缘硬件之上，彻底解耦于第三方云服务。
+        </div>
+      </div>
+      <div class="bi-en">
+        <div class="bi-title">Overall Architecture Philosophy</div>
+        <div class="bi-body">
+          Echo adopts a <strong>Control Plane / Data Plane separation</strong> dual-layer architecture,
+          with all compute deployed on user-owned edge hardware, completely decoupled from third-party cloud services.
+        </div>
+      </div>
+    </div>
+
+    <div class="arch-diagram">
+      <div class="arch-block">
+        <div class="ab-icon">📱</div>
+        <div class="ab-zh">移动感知层</div>
+        <div class="ab-en">Mobile Perception Layer</div>
+        <div class="ab-desc-zh">低功耗音频采集与本地加密（ASR-tiny），作为数据采集前端。</div>
+        <div class="ab-desc-en">Low-power audio capture with local encryption (ASR-tiny), serving as the data acquisition frontend.</div>
+      </div>
+      <div class="arch-block">
+        <div class="ab-icon">🏠</div>
+        <div class="ab-zh">局域网传输层</div>
+        <div class="ab-en">LAN Transport Layer</div>
+        <div class="ab-desc-zh">通过私有 Wi-Fi / VPN 进行安全的数据同步，数据不离开私有网络。</div>
+        <div class="ab-desc-en">Secure data synchronization over private Wi-Fi / VPN, ensuring data never leaves the private network.</div>
+      </div>
+      <div class="arch-block">
+        <div class="ab-icon">📦</div>
+        <div class="ab-zh">Spring Boot 控制面</div>
+        <div class="ab-en">Spring Boot Control Plane</div>
+        <div class="ab-desc-zh">
+          负责<strong>多设备编排、安全网络、Redis 任务队列</strong>以及 Neo4j 图谱编织。
+          处理多租户隔离与事务化 P2P 载荷分发。
+        </div>
+        <div class="ab-desc-en">
+          Responsible for <strong>multi-device orchestration, secure networking, Redis task queues</strong>, and Neo4j graph weaving.
+          Handles multi-tenant isolation and transactional P2P payload distribution.
+        </div>
+      </div>
+      <div class="arch-block">
+        <div class="ab-icon">🐍</div>
+        <div class="ab-zh">Python FastAPI 数据面</div>
+        <div class="ab-en">Python FastAPI Data Plane</div>
+        <div class="ab-desc-zh">
+          算法精炼厂：负责高速 <strong>WhisperX 转写</strong>、
+          Ollama 本地模型编排与 M4 加速 LLM 摘要处理。
+        </div>
+        <div class="ab-desc-en">
+          The algorithmic refinery: handles high-speed <strong>WhisperX transcription</strong>,
+          Ollama local model orchestration, and M4-accelerated LLM summarization.
+        </div>
+      </div>
+      <div class="arch-block">
+        <div class="ab-icon">📥</div>
+        <div class="ab-zh">Docker MinIO 存储层</div>
+        <div class="ab-en">Docker MinIO Storage Layer</div>
+        <div class="ab-desc-zh">
+          标准化本地 S3 对象存储，存放<strong>二进制原始音频与渲染后的图像明信片</strong>，
+          符合 S3 规范的本地仓库，承载海量数据资产与记忆快照。
+        </div>
+        <div class="ab-desc-en">
+          Standardized local S3-compatible object store for <strong>raw binary audio and rendered image postcards</strong>.
+          An S3-compliant local repository hosting massive data assets and memory snapshots.
+        </div>
+      </div>
+      <div class="arch-block">
+        <div class="ab-icon">🛡</div>
+        <div class="ab-zh">解耦设计</div>
+        <div class="ab-en">Decoupled Design</div>
+        <div class="ab-desc-zh">
+          完全独立于第三方云服务，所有模块均可在家用服务器/NAS 上独立运行。
+        </div>
+        <div class="ab-desc-en">
+          Completely independent of third-party cloud services; all modules operate autonomously on home servers/NAS hardware.
+        </div>
+      </div>
+    </div>
+
+    <!-- Social Graph -->
+    <div style="margin-top: 16px;">
+      <div class="sub-heading">社交图谱引擎 / Social Graph Engine — Neo4j Core</div>
+    </div>
+    <div class="bi-row">
+      <div class="bi-zh">
+        <div class="bi-title">属性图模型</div>
+        <div class="bi-body">
+          存储<strong>多维度的关系节点</strong>，连线本身携带内在的情感度量。
+          基于互动频率、情感分析与关键话题构建动态关系宇宙，映射隐性「社交引力」聚类。
+        </div>
+      </div>
+      <div class="bi-en">
+        <div class="bi-title">Property Graph Model</div>
+        <div class="bi-body">
+          Stores <strong>multi-dimensional relationship nodes</strong>, with edges carrying intrinsic sentiment metrics.
+          Builds a dynamic relationship universe based on interaction frequency, sentiment, and key topics, mapping hidden "social gravity" clusters.
+        </div>
+      </div>
+    </div>
+    <div class="bi-row">
+      <div class="bi-zh">
+        <div class="bi-title">动态移动端 UI</div>
+        <div class="bi-body">
+          基于 <strong>D3.js</strong> 的力导向移动端图谱视图，支持流畅的缩放、拖拽与节点扩展手势。
+          用户通过触摸探索自己完整的社交生态。
+        </div>
+      </div>
+      <div class="bi-en">
+        <div class="bi-title">Dynamic Mobile UI</div>
+        <div class="bi-body">
+          A <strong>D3.js</strong>-powered force-directed mobile graph view with smooth zoom, drag, and node-expansion gestures.
+          Users explore their entire social ecosystem through touch interaction.
+        </div>
+      </div>
+    </div>
+    <div class="bi-row">
+      <div class="bi-zh">
+        <div class="bi-title">APOC 图算法</div>
+        <div class="bi-body">
+          可直接调用本地 <strong>PageRank 与社区发现</strong>算法，
+          绘制隐性的社交引力聚类，揭示用户社交网络中的潜在模式。
+        </div>
+      </div>
+      <div class="bi-en">
+        <div class="bi-title">APOC Graph Algorithms</div>
+        <div class="bi-body">
+          Natively calls local <strong>PageRank and Community Detection</strong> algorithms
+          to map hidden social gravity clusters and reveal latent patterns in the user's social network.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════ 4. TECH STACK ════════ -->
+  <div class="section" id="sec4">
+    <div class="section-header">
+      <div class="section-num">4</div>
+      <div>
+        <div class="section-sub">Section Four</div>
+        <h2>技术实现方案与关键技术点 / Technical Implementation &amp; Key Technologies</h2>
+      </div>
+    </div>
+
+    <div class="bi-row">
+      <div class="bi-zh">
+        <div class="bi-title">核心技术栈概览</div>
+        <div class="bi-body">
+          Echo 采用双栈融合架构：以 Spring Boot（Java）承载控制逻辑，以 Python FastAPI 承载 AI 算法执行，两者通过 Redis 消息队列解耦通信。
+        </div>
+      </div>
+      <div class="bi-en">
+        <div class="bi-title">Core Tech Stack Overview</div>
+        <div class="bi-body">
+          Echo uses a dual-stack fusion architecture: Spring Boot (Java) handles control logic while Python FastAPI handles AI algorithm execution, with Redis message queues decoupling their communication.
+        </div>
+      </div>
+    </div>
+
+    <!-- Tech Table - Comprehensive -->
+    <table class="tech-table">
+      <thead>
+        <tr>
+          <th>层级 / Layer</th>
+          <th>工具 / 框架 / Tools &amp; Frameworks</th>
+          <th>角色说明（中文）/ Role (Chinese)</th>
+          <th>Role Description (English)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="layer">控制引擎<br/><span style="font-size:11px;color:#666;">Control Engine</span></td>
+          <td class="tools">Spring Boot 3.2.x / Redis</td>
+          <td>编排事务化队列、多租户安全与 P2P 载荷</td>
+          <td>Orchestrates transactional queues, multi-tenant security, and P2P payloads</td>
+        </tr>
+        <tr>
+          <td class="layer">图谱拓扑<br/><span style="font-size:11px;color:#666;">Graph Topology</span></td>
+          <td class="tools">Neo4j 5.x（Cypher / APOC）</td>
+          <td>维护深度关系度量与模糊语义向量索引</td>
+          <td>Maintains deep relationship metrics and fuzzy semantic vector indexes</td>
+        </tr>
+        <tr>
+          <td class="layer">对象存储<br/><span style="font-size:11px;color:#666;">Object Storage</span></td>
+          <td class="tools">MinIO Docker Base</td>
+          <td>符合 S3 规范的本地仓库，承载海量数据资产与记忆快照</td>
+          <td>S3-compliant local repository hosting massive data assets and memory snapshots</td>
+        </tr>
+        <tr>
+          <td class="layer">AI 执行<br/><span style="font-size:11px;color:#666;">AI Execution</span></td>
+          <td class="tools">FastAPI / Ollama / WhisperX</td>
+          <td>处理音频说话人切分与 M4 加速 LLM 摘要的数据面</td>
+          <td>Data plane handling audio speaker diarization and M4-accelerated LLM summarization</td>
+        </tr>
+        <tr>
+          <td class="layer">图数据库<br/><span style="font-size:11px;color:#666;">Graph DB</span></td>
+          <td class="tools">Neo4j（Cypher）</td>
+          <td>存储复杂的社交节点与关系边</td>
+          <td>Stores complex social nodes and relationship edges</td>
+        </tr>
+        <tr>
+          <td class="layer">本地 LLM<br/><span style="font-size:11px;color:#666;">Local LLM</span></td>
+          <td class="tools">Qwen2.5 / Ollama</td>
+          <td>通过统一内存直接运行于 M4 硬件，将原始转写文本压缩为精炼的语义洞见</td>
+          <td>Runs directly on M4 hardware via unified memory, compressing raw transcription into refined semantic insights</td>
+        </tr>
+        <tr>
+          <td class="layer">音频转写<br/><span style="font-size:11px;color:#666;">Audio Transcription</span></td>
+          <td class="tools">WhisperX</td>
+          <td>时间戳对齐的词级边界，确保上下文零碎片化</td>
+          <td>Timestamp-aligned word-level boundaries ensuring zero context fragmentation</td>
+        </tr>
+        <tr>
+          <td class="layer">图像生成<br/><span style="font-size:11px;color:#666;">Image Generation</span></td>
+          <td class="tools">Stable Diffusion SDXL / LoRA / ComfyUI</td>
+          <td>由情感峰值自动触发并生成视觉明信片</td>
+          <td>Auto-triggered by emotional peaks to generate visual memory postcards</td>
+        </tr>
+        <tr>
+          <td class="layer">前端<br/><span style="font-size:11px;color:#666;">Frontend</span></td>
+          <td class="tools">React Native / D3.js</td>
+          <td>交互式动态图谱 UI 与移动端记忆流</td>
+          <td>Interactive dynamic graph UI and mobile memory stream</td>
+        </tr>
+        <tr>
+          <td class="layer">P2P 网络<br/><span style="font-size:11px;color:#666;">P2P Network</span></td>
+          <td class="tools">Tailscale / WireGuard</td>
+          <td>零配置隧道，穿越运营商对称 NAT，无需公网 IP</td>
+          <td>Zero-configuration tunnel traversing carrier-grade symmetric NAT without requiring a public IP</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Acoustic Intelligence -->
+    <div style="margin-top: 16px;">
+      <div class="sub-heading">声学智能层 / Acoustic Intelligence Layer</div>
+    </div>
+    <div class="bi-row">
+      <div class="bi-zh">
+        <div class="bi-title">🆔 声纹身份（Voice ID）</div>
+        <div class="bi-body">
+          自研<strong>声纹识别（Speaker Diarization）</strong>精准区分主人与访客，
+          构建准确的时间线历史映射，确保「历史记忆」准确归属。
+        </div>
+      </div>
+      <div class="bi-en">
+        <div class="bi-title">🆔 Voice ID</div>
+        <div class="bi-body">
+          Proprietary <strong>Speaker Diarization</strong> precisely distinguishes owner from guests,
+          building an accurate historical timeline mapping and ensuring memory attribution.
+        </div>
+      </div>
+    </div>
+    <div class="bi-row">
+      <div class="bi-zh">
+        <div class="bi-title">⏱ WhisperX 集成</div>
+        <div class="bi-body">
+          时间戳对齐的<strong>词级边界</strong>，确保上下文零碎片化，
+          实现精准的对话内容定位与检索。
+        </div>
+      </div>
+      <div class="bi-en">
+        <div class="bi-title">⏱ WhisperX Integration</div>
+        <div class="bi-body">
+          Timestamp-aligned <strong>word-level boundaries</strong> ensure zero context fragmentation,
+          enabling precise conversation content positioning and retrieval.
+        </div>
+      </div>
+    </div>
+    <div class="bi-row">
+      <div class="bi-zh">
+        <div class="bi-title">🧠 Qwen2.5 本地 LLM</div>
+        <div class="bi-body">
+          通过<strong>统一内存</strong>直接运行于 M4 硬件，
+          将原始转写文本压缩为精炼的语义洞见，实现本地推理零延迟。
+        </div>
+      </div>
+      <div class="bi-en">
+        <div class="bi-title">🧠 Qwen2.5 Local LLM</div>
+        <div class="bi-body">
+          Runs directly on <strong>M4 hardware via unified memory</strong>,
+          compressing raw transcription text into refined semantic insights with zero-latency local inference.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════ 5. PRIVACY ════════ -->
+  <div class="section" id="sec5">
+    <div class="section-header">
+      <div class="section-num">5</div>
+      <div>
+        <div class="section-sub">Section Five</div>
+        <h2>安全与隐私保障 / Security &amp; Privacy Guarantees</h2>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px;margin-bottom:16px;">
+      <div class="highlight-box">
+        <div class="hl-num">100%</div>
+        <div class="hl-zh">本地数据主权</div>
+        <div class="hl-en">LOCAL DATA SOVEREIGNTY</div>
+      </div>
+      <div class="highlight-box">
+        <div class="hl-num">0</div>
+        <div class="hl-zh">数据外泄</div>
+        <div class="hl-en">DATA LEAKAGE</div>
+      </div>
+      <div class="highlight-box">
+        <div class="hl-num">E2E</div>
+        <div class="hl-zh">端到端非对称加密</div>
+        <div class="hl-en">END-TO-END ENCRYPTION</div>
+      </div>
+    </div>
+
+    <div class="privacy-grid">
+      <div class="priv-card">
+        <div class="pc-icon">👥</div>
+        <div class="pc-zh">逻辑数据库分区</div>
+        <div class="pc-en">Logical Database Partitioning</div>
+        <div class="pc-body-zh">为家庭成员分别配置独立的 Neo4j 实例，杜绝记忆泄漏，实现多租户完全隔离。</div>
+        <div class="pc-body-en">Separate Neo4j instances per family member prevent memory leakage and achieve complete multi-tenant isolation.</div>
+      </div>
+      <div class="priv-card">
+        <div class="pc-icon">🔑</div>
+        <div class="pc-zh">双密钥加密</div>
+        <div class="pc-en">Dual-Key Encryption</div>
+        <div class="pc-body-zh">端到端非对称加密，确保特定条目在客户端解密前对家庭服务器完全不可见。</div>
+        <div class="pc-body-en">End-to-end asymmetric encryption ensures specific entries remain completely invisible to the home server until decrypted client-side.</div>
+      </div>
+      <div class="priv-card">
+        <div class="pc-icon">🗄</div>
+        <div class="pc-zh">数据库托管在家中物理节点</div>
+        <div class="pc-en">Database on Physical Home Node</div>
+        <div class="pc-body-zh">数据始终在你的房间，存储在家中物理节点，不依赖任何外部数据中心。</div>
+        <div class="pc-body-en">Data always stays in your home, stored on physical nodes without dependence on any external data center.</div>
+      </div>
+      <div class="priv-card">
+        <div class="pc-icon">🚫</div>
+        <div class="pc-zh">零第三方追踪</div>
+        <div class="pc-en">Zero Third-Party Tracking</div>
+        <div class="pc-body-zh">零依赖外部追踪或广告 API，彻底告别第三方数据采集，保护用户隐私。</div>
+        <div class="pc-body-en">Zero dependency on external tracking or advertising APIs, completely eliminating third-party data collection.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════ 6. P2P MESH ════════ -->
+  <div class="section" id="sec6">
+    <div class="section-header">
+      <div class="section-num">6</div>
+      <div>
+        <div class="section-sub">Section Six</div>
+        <h2>联邦化 P2P 跨节点网格 / Federated P2P Cross-Node Mesh</h2>
+      </div>
+    </div>
+
+    <div class="bi-row">
+      <div class="bi-zh">
+        <div class="bi-title">分布式架构概述</div>
+        <div class="bi-body">
+          Echo 的扩展版本支持<strong>联邦化 P2P 网格</strong>，允许多个 Echo 节点在不依赖中心服务器的情况下，
+          跨节点缝合各自的记忆图谱，实现真正去中心化的个人数字记忆网络。
+        </div>
+      </div>
+      <div class="bi-en">
+        <div class="bi-title">Distributed Architecture Overview</div>
+        <div class="bi-body">
+          Echo's extended version supports a <strong>federated P2P mesh</strong>, allowing multiple Echo nodes to
+          stitch their respective memory graphs across nodes without relying on a central server,
+          realizing a truly decentralized personal digital memory network.
+        </div>
+      </div>
+    </div>
+
+    <div class="bi-row">
+      <div class="bi-zh">
+        <div class="bi-title">🛰 零配置隧道</div>
+        <div class="bi-body">
+          通过 <strong>Tailscale / WireGuard 边车容器</strong>，
+          跨越运营商对称 NAT，无需公网 IP 即可建立安全的跨节点连接。
+        </div>
+      </div>
+      <div class="bi-en">
+        <div class="bi-title">🛰 Zero-Config Tunnel</div>
+        <div class="bi-body">
+          Via <strong>Tailscale / WireGuard sidecar containers</strong>,
+          traverses carrier-grade symmetric NAT to establish secure cross-node connections without requiring a public IP.
+        </div>
+      </div>
+    </div>
+    <div class="bi-row">
+      <div class="bi-zh">
+        <div class="bi-title">🔀 声音哈希对齐</div>
+        <div class="bi-body">
+          节点凭借<strong>不可变的 SHA-256 声音签名</strong>识别共有条目，
+          无需统一全局 ID 即可缝合各自的图谱，实现去中心化身份认证。
+        </div>
+      </div>
+      <div class="bi-en">
+        <div class="bi-title">🔀 Voice Hash Alignment</div>
+        <div class="bi-body">
+          Nodes identify shared entries via <strong>immutable SHA-256 voice signatures</strong>,
+          stitching their graphs together without requiring a unified global ID — enabling decentralized identity.
+        </div>
+      </div>
+    </div>
+    <div class="bi-row">
+      <div class="bi-zh">
+        <div class="bi-title">✉ 异步载荷分发</div>
+        <div class="bi-body">
+          <strong>Spring Boot WebClient</strong> 通过事务化 Redis 重试机制，
+          投递经签名加密的 <code>.echo</code> 记忆快照，确保跨节点数据同步的可靠性与安全性。
+        </div>
+      </div>
+      <div class="bi-en">
+        <div class="bi-title">✉ Async Payload Distribution</div>
+        <div class="bi-body">
+          <strong>Spring Boot WebClient</strong> delivers signed and encrypted <code>.echo</code> memory snapshots
+          via transactional Redis retry mechanisms, ensuring reliable and secure cross-node data synchronization.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════ 7. RAG RECALL ════════ -->
+  <div class="section" id="sec7">
+    <div class="section-header">
+      <div class="section-num">7</div>
+      <div>
+        <div class="section-sub">Section Seven</div>
+        <h2>RAG 驱动的记忆回想 / RAG-Powered Memory Recall</h2>
+      </div>
+    </div>
+
+    <div class="bi-row">
+      <div class="bi-zh">
+        <div class="bi-title">🔎 自然语言查询</div>
+        <div class="bi-body">
+          用文字或语音向 APP 提问，例如：<br/>
+          「<em>去年冬天我和 John 去的是哪家咖啡馆？</em>」<br/>
+          「<em>上个圣诞我们在咖啡馆聊了什么？</em>」<br/>
+          即可触发实时图谱导航，获得即时摘要。
+        </div>
+      </div>
+      <div class="bi-en">
+        <div class="bi-title">🔎 Natural Language Queries</div>
+        <div class="bi-body">
+          Ask the app in text or voice, e.g.:<br/>
+          "<em>Which café did John and I visit last winter?</em>"<br/>
+          "<em>What did we talk about at the café last Christmas?</em>"<br/>
+          This triggers real-time graph navigation and instant summarization.
+        </div>
+      </div>
+    </div>
+    <div class="bi-row">
+      <div class="bi-zh">
+        <div class="bi-title">🧠 语义索引 / 向量嵌入</div>
+        <div class="bi-body">
+          结合<strong>高维向量嵌入与 Neo4j 原生索引结构</strong>，
+          实现高级模糊语义检索，超越传统关键字匹配，理解查询的深层语义意图。
+        </div>
+      </div>
+      <div class="bi-en">
+        <div class="bi-title">🧠 Semantic Index / Vector Embeddings</div>
+        <div class="bi-body">
+          Combines <strong>high-dimensional vector embeddings with Neo4j's native index structure</strong>
+          for advanced fuzzy semantic retrieval, going beyond keyword matching to understand the deep semantic intent of queries.
+        </div>
+      </div>
+    </div>
+    <div class="bi-row">
+      <div class="bi-zh">
+        <div class="bi-title">📅 每日精华（晨间胶囊）</div>
+        <div class="bi-body">
+          自动生成「<strong>晨间胶囊</strong>」，凝练前一天的亮点与关系变化，
+          帮助用户在每日开始时快速回顾昨日的重要记忆。
+        </div>
+      </div>
+      <div class="bi-en">
+        <div class="bi-title">📅 Daily Digest (Morning Capsule)</div>
+        <div class="bi-body">
+          Automatically generates a "<strong>Morning Capsule</strong>" that distills the previous day's highlights and relationship changes,
+          helping users quickly review key memories at the start of each day.
+        </div>
+      </div>
+    </div>
+    <div class="bi-row">
+      <div class="bi-zh">
+        <div class="bi-title">📐 信息蒸馏</div>
+        <div class="bi-body">
+          通过算法<strong>剔除口头填充语</strong>（如"嗯"、"那个"等），
+          优化上下文窗口性能与 token 熵，仅保留高价值的信息内容。
+        </div>
+      </div>
+      <div class="bi-en">
+        <div class="bi-title">📐 Information Distillation</div>
+        <div class="bi-body">
+          Algorithmically <strong>filters verbal fillers</strong> (e.g., "um", "uh", "like"),
+          optimizing context window performance and token entropy to retain only high-value information.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════ 8. VISUAL MEMORIES ════════ -->
+  <div class="section" id="sec8">
+    <div class="section-header">
+      <div class="section-num">8</div>
+      <div>
+        <div class="section-sub">Section Eight</div>
+        <h2>AI 视觉记忆卡片 / AI Visual Memory Cards</h2>
+      </div>
+    </div>
+
+    <div class="bi-row">
+      <div class="bi-zh">
+        <div class="bi-title">技术原理</div>
+        <div class="bi-body">
+          通过 <strong>Stable Diffusion（SDXL / LoRA）</strong> API 集成，
+          由对话情感峰值自动触发并生成视觉明信片。
+          图像原生存放于 MinIO Bucket，再以临时安全的预签名 URL 推流至用户端，节省核心带宽。
+        </div>
+      </div>
+      <div class="bi-en">
+        <div class="bi-title">Technical Principle</div>
+        <div class="bi-body">
+          Via <strong>Stable Diffusion (SDXL / LoRA)</strong> API integration,
+          visual postcards are auto-triggered by conversational emotional peaks.
+          Images are natively stored in MinIO Buckets and streamed to users via temporary secure pre-signed URLs, conserving core bandwidth.
+        </div>
+      </div>
+    </div>
+
+    <div class="tri-grid" style="margin-top:8px;">
+      <div class="tri-card">
+        <div class="zh-name">AI 记忆卡片 1</div>
+        <div class="en-name">AI Memory Card 1</div>
+        <div class="desc-zh"><strong>艺术诠释</strong>：将对话的情感高峰转化为充满艺术感的视觉表达，以抽象艺术风格诠释记忆精华。</div>
+        <div class="desc-en"><strong>Artistic Interpretation</strong>: Transforms emotional conversation peaks into artistic visual expressions in an abstract art style.</div>
+      </div>
+      <div class="tri-card">
+        <div class="zh-name">AI 记忆卡片 2</div>
+        <div class="en-name">AI Memory Card 2</div>
+        <div class="desc-zh"><strong>氛围场景</strong>：重建对话发生时的环境氛围，以沉浸式场景风格还原珍贵记忆的现场感。</div>
+        <div class="desc-en"><strong>Ambient Scene</strong>: Reconstructs the environmental atmosphere of the conversation in an immersive scene style.</div>
+      </div>
+      <div class="tri-card">
+        <div class="zh-name">AI 记忆卡片 3</div>
+        <div class="en-name">AI Memory Card 3</div>
+        <div class="desc-zh"><strong>抽象联结</strong>：以抽象符号与视觉隐喻表达关系连接的本质，揭示人际关系的深层纽带。</div>
+        <div class="desc-en"><strong>Abstract Connection</strong>: Uses abstract symbols and visual metaphors to express the essence of relational bonds, revealing the deep ties between people.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════ 9. ROADMAP ════════ -->
+  <div class="section" id="sec9">
+    <div class="section-header">
+      <div class="section-num">9</div>
+      <div>
+        <div class="section-sub">Section Nine</div>
+        <h2>实施路径与阶段性计划 / Implementation Roadmap</h2>
+      </div>
+    </div>
+
+    <div class="bi-row" style="margin-bottom:8px;">
+      <div class="bi-zh">
+        <div class="bi-title">路线图总览</div>
+        <div class="bi-body">Echo 项目分为四个渐进式阶段，从 MVP 基础功能验证到完整生态发布，遵循开源演进路径。</div>
+      </div>
+      <div class="bi-en">
+        <div class="bi-title">Roadmap Overview</div>
+        <div class="bi-body">The Echo project unfolds across four progressive phases, from MVP validation to full ecosystem release, following an open-source evolution path.</div>
+      </div>
+    </div>
+
+    <div class="roadmap">
+      <div class="phase">
+        <div class="phase-num"><div class="pn">1</div><div class="pl">Phase</div></div>
+        <div class="phase-zh">
+          <div class="phase-title-zh">MVP — 基础能力验证</div>
+          <div class="phase-body">
+            <strong>语音活动检测（VAD）</strong>音频采集、本地加密与 Spring-MinIO 同步引擎。
+            实现本地语音采集与加密局域网同步引擎，完成核心数据管道的端到端验证。
+          </div>
+        </div>
+        <div class="phase-en">
+          <div class="phase-title-en">MVP — Core Capability Validation</div>
+          <div class="phase-body">
+            <strong>Voice Activity Detection (VAD)</strong> audio capture, local encryption, and Spring-MinIO synchronization engine.
+            Local voice capture and encrypted LAN sync engine, completing end-to-end validation of the core data pipeline.
+          </div>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-num"><div class="pn">2</div><div class="pl">Phase</div></div>
+        <div class="phase-zh">
+          <div class="phase-title-zh">图谱与 AI 集成</div>
+          <div class="phase-body">
+            <strong>Neo4j SDN 绑定</strong>及 Ollama 本地提示流水线。
+            核心关系映射逻辑落地，实现社交图谱的动态构建与 AI 摘要能力。
+          </div>
+        </div>
+        <div class="phase-en">
+          <div class="phase-title-en">Graph &amp; AI Integration</div>
+          <div class="phase-body">
+            <strong>Neo4j SDN binding</strong> and Ollama local prompt pipeline.
+            Core relationship mapping logic deployed, enabling dynamic social graph construction and AI summarization.
+          </div>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-num"><div class="pn">3</div><div class="pl">Phase</div></div>
+        <div class="phase-zh">
+          <div class="phase-title-zh">分布式 P2P / 视觉创作</div>
+          <div class="phase-body">
+            <strong>Tailscale 跨节点隧道</strong>与声音哈希图谱缝合（扩展版）；
+            SD 渲染与 RAG 检索系统落地（基础版）。
+            实现跨设备记忆同步与 AI 视觉记忆卡片生成。
+          </div>
+        </div>
+        <div class="phase-en">
+          <div class="phase-title-en">Distributed P2P / Visual Creation</div>
+          <div class="phase-body">
+            <strong>Tailscale cross-node tunneling</strong> with voice-hash graph stitching (extended);
+            SD rendering and RAG retrieval system (base).
+            Cross-device memory sync and AI visual memory card generation.
+          </div>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-num"><div class="pn">4</div><div class="pl">Phase</div></div>
+        <div class="phase-zh">
+          <div class="phase-title-zh">生态发布</div>
+          <div class="phase-body">
+            <strong>ComfyUI 自定义流水线</strong>与社区插件 API 钩子。
+            插件 API 与社区 LoRA 模型开放，构建开放的开发者生态，赋能极客掌控自己的数字遗产。
+          </div>
+        </div>
+        <div class="phase-en">
+          <div class="phase-title-en">Ecosystem Release</div>
+          <div class="phase-body">
+            <strong>ComfyUI custom pipelines</strong> and community plugin API hooks.
+            Plugin API and community LoRA model openings build an open developer ecosystem,
+            empowering developers and geeks to own their digital legacy.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════ 10. OUTCOMES ════════ -->
+  <div class="section" id="sec10">
+    <div class="section-header">
+      <div class="section-num">10</div>
+      <div>
+        <div class="section-sub">Section Ten</div>
+        <h2>预期成果与影响评估 / Expected Outcomes &amp; Impact Assessment</h2>
+      </div>
+    </div>
+
+    <div class="bi-row">
+      <div class="bi-zh">
+        <div class="bi-title">核心价值主张</div>
+        <div class="bi-body">
+          Echo 致力于<strong>赋能开发者，于边缘安全地掌控自己的数字遗产</strong>（扩展版）；
+          <strong>赋能极客，掌控自己的数字遗产</strong>（基础版）。
+          通过完全本地化的 AI 能力，实现真正意义上的数字记忆自主权。
+        </div>
+      </div>
+      <div class="bi-en">
+        <div class="bi-title">Core Value Proposition</div>
+        <div class="bi-body">
+          Echo is committed to <strong>empowering developers to securely own their digital legacy at the edge</strong> (extended version)
+          and <strong>empowering geeks to own their digital legacy</strong> (base version).
+          Through fully local AI capabilities, it achieves true digital memory sovereignty.
+        </div>
+      </div>
+    </div>
+
+    <div class="bi-row">
+      <div class="bi-zh">
+        <div class="bi-title">隐私保护成果</div>
+        <div class="bi-body">
+          <ul>
+            <li>实现 <strong>100% 本地数据主权</strong>，零数据外泄</li>
+            <li>完全脱离第三方云依赖，用户数据始终存储于私有物理节点</li>
+            <li>端到端非对称加密保障个人记忆安全</li>
+            <li>多租户逻辑隔离，家庭场景下隐私互不干扰</li>
+          </ul>
+        </div>
+      </div>
+      <div class="bi-en">
+        <div class="bi-title">Privacy Protection Outcomes</div>
+        <div class="bi-body">
+          <ul>
+            <li>Achieves <strong>100% local data sovereignty</strong> with zero data leakage</li>
+            <li>Complete independence from third-party cloud, data always on private physical nodes</li>
+            <li>End-to-end asymmetric encryption secures personal memories</li>
+            <li>Multi-tenant logical isolation ensures privacy in family scenarios</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="bi-row">
+      <div class="bi-zh">
+        <div class="bi-title">技术能力成果</div>
+        <div class="bi-body">
+          <ul>
+            <li>构建完整的<strong>本地 AI 推理栈</strong>（WhisperX + Qwen2.5 + SD），无需云端 API</li>
+            <li>实现<strong>动态社交图谱</strong>的自动化构建与可视化探索</li>
+            <li>通过 RAG 实现自然语言驱动的记忆检索，超越传统搜索</li>
+            <li>分布式 P2P 架构支持跨节点、跨家庭的记忆缝合</li>
+          </ul>
+        </div>
+      </div>
+      <div class="bi-en">
+        <div class="bi-title">Technical Capability Outcomes</div>
+        <div class="bi-body">
+          <ul>
+            <li>Builds a complete <strong>local AI inference stack</strong> (WhisperX + Qwen2.5 + SD) without cloud APIs</li>
+            <li>Enables automated construction and visual exploration of a <strong>dynamic social graph</strong></li>
+            <li>RAG-powered natural language memory retrieval beyond traditional search</li>
+            <li>Distributed P2P architecture supports cross-node, cross-family memory stitching</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="bi-row">
+      <div class="bi-zh">
+        <div class="bi-title">开发者生态影响</div>
+        <div class="bi-body">
+          <ul>
+            <li>通过 <strong>GitHub 开源</strong>（github.com/dinopell/echo），赋能全球开发者社区</li>
+            <li>提供<strong>插件 API 钩子</strong>与 ComfyUI 自定义流水线，降低生态扩展门槛</li>
+            <li>社区 LoRA 模型生态，支持个性化视觉风格定制</li>
+            <li>为边缘 AI 与个人隐私计算领域树立开源参考实现</li>
+          </ul>
+        </div>
+      </div>
+      <div class="bi-en">
+        <div class="bi-title">Developer Ecosystem Impact</div>
+        <div class="bi-body">
+          <ul>
+            <li>Empowers the global developer community via <strong>open-source on GitHub</strong> (github.com/dinopell/echo)</li>
+            <li>Provides <strong>plugin API hooks</strong> and ComfyUI custom pipelines to lower ecosystem extension barriers</li>
+            <li>Community LoRA model ecosystem supporting personalized visual style customization</li>
+            <li>Establishes an open-source reference implementation for edge AI and personal privacy computing</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="bi-row">
+      <div class="bi-zh">
+        <div class="bi-title">用户体验成果</div>
+        <div class="bi-body">
+          <ul>
+            <li>通过<strong>晨间胶囊</strong>每日自动凝练重要记忆，降低记忆管理成本</li>
+            <li>AI 视觉记忆卡片为珍贵瞬间赋予艺术表达，增强情感共鸣</li>
+            <li>自然语言查询让记忆检索像聊天一样自然，无学习成本</li>
+            <li>社交图谱可视化帮助用户理解自己的关系网络与社交动态</li>
+          </ul>
+        </div>
+      </div>
+      <div class="bi-en">
+        <div class="bi-title">User Experience Outcomes</div>
+        <div class="bi-body">
+          <ul>
+            <li><strong>Morning Capsule</strong> automatically distills key memories daily, reducing memory management overhead</li>
+            <li>AI visual memory cards give artistic expression to precious moments, enhancing emotional resonance</li>
+            <li>Natural language queries make memory retrieval as natural as conversation, with zero learning curve</li>
+            <li>Social graph visualization helps users understand their relationship network and social dynamics</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /container -->
+
+<!-- ─── Footer ─── -->
+<footer>
+  <div class="f-title">Project Echo — 共建未来 / Build the Future Together</div>
+  <div class="f-sub">赋能开发者，于边缘安全地掌控自己的数字遗产<br/>Empowering developers to securely own their digital legacy at the edge</div>
+  <div class="f-links">
+    <a href="https://github.com/dinopell/echo">GITHUB.COM/DINOPELL/ECHO</a>
+    &nbsp;&nbsp;·&nbsp;&nbsp;
+    CONTACT@LOCAL.LAN
+  </div>
+  <div style="margin-top:24px;font-size:11px;color:#333;letter-spacing:1px;">
+    本规划书基于「项目Echo_扩展分布式架构」与「项目Echo_私人记忆的未来」两份原始文档整理 ·
+    Compiled from "Project Echo: Extended Distributed Architecture" &amp; "Project Echo: The Future of Private Memories"
+  </div>
+</footer>
+
+</body>
+</html>
