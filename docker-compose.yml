@@ -215,3 +215,29 @@ services:
       timeout: 10s
       retries: 5
       start_period: 90s
+
+  # ─────────────────────────────────────────────
+  # Web 控制台 — React 管理界面（端口 3000）
+  # ─────────────────────────────────────────────
+  web-console:
+    build:
+      context: ./web-console
+      dockerfile: Dockerfile
+      args:
+        REGISTRY_PREFIX: ${DOCKER_REGISTRY_PREFIX:-}
+    container_name: echo-web-console
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    depends_on:
+      control-plane:
+        condition: service_healthy
+      data-plane:
+        condition: service_healthy
+    networks:
+      - echo-network
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://localhost/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3

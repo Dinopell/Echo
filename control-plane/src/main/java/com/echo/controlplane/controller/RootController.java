@@ -23,6 +23,7 @@ public class RootController {
         body.put("conversations", "/api/v1/graph/conversations");
         body.put("uploadAudio", "POST /api/v1/audio/upload");
         body.put("dataPlaneDocs", "http://localhost:8001/docs");
+        body.put("webConsole", "http://localhost:3000");
         body.put("neo4jBrowser", "http://localhost:7474");
         body.put("minioConsole", "http://localhost:9001");
         return ResponseEntity.ok(body);

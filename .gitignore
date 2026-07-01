@@ -34,3 +34,6 @@ env/
 .env
 .env.local
 control-plane/.gradle/
+control-plane/bin/
+web-console/node_modules/
+web-console/dist/
