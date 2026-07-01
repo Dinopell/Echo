@@ -1,0 +1,106 @@
+# Project Echo — 仅基础设施（无需构建应用镜像）
+# 适用场景：Docker Hub 拉取失败，或本地开发（控制面/数据面在宿主机运行）
+#
+# 启动：
+#   docker compose -f docker-compose.infra.yml up -d
+#
+# 然后在本机启动：
+#   终端1: ollama serve
+#   终端2: cd data-plane && python3 -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt && uvicorn main:app --host 0.0.0.0 --port 8001 --reload
+#   终端3: cd control-plane && ./gradlew bootRun
+
+networks:
+  echo-network:
+    driver: bridge
+    name: echo-network
+
+volumes:
+  neo4j-data:
+    name: echo-neo4j-data
+  neo4j-logs:
+    name: echo-neo4j-logs
+  minio-data:
+    name: echo-minio-data
+  redis-data:
+    name: echo-redis-data
+
+services:
+  redis:
+    image: ${DOCKER_REGISTRY_PREFIX:-}redis:7-alpine
+    container_name: echo-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes --maxmemory 512mb --maxmemory-policy allkeys-lru
+    networks:
+      - echo-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  neo4j:
+    image: ${DOCKER_REGISTRY_PREFIX:-}neo4j:5-community
+    container_name: echo-neo4j
+    restart: unless-stopped
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    volumes:
+      - neo4j-data:/data
+      - neo4j-logs:/logs
+      - ./infrastructure/neo4j:/docker-entrypoint-initdb.d
+    environment:
+      - NEO4J_AUTH=${NEO4J_USERNAME:-neo4j}/${NEO4J_PASSWORD:-echo_neo4j_pass}
+      - NEO4J_PLUGINS=["apoc"]
+      - NEO4J_dbms_security_procedures_unrestricted=apoc.*
+      - NEO4J_server_memory_heap_initial__size=512m
+      - NEO4J_server_memory_heap_max__size=1g
+    networks:
+      - echo-network
+    healthcheck:
+      test: ["CMD", "cypher-shell", "-u", "${NEO4J_USERNAME:-neo4j}", "-p", "${NEO4J_PASSWORD:-echo_neo4j_pass}", "RETURN 1"]
+      interval: 20s
+      timeout: 10s
+      retries: 10
+      start_period: 30s
+
+  minio:
+    image: ${DOCKER_REGISTRY_PREFIX:-}minio/minio:latest
+    container_name: echo-minio
+    restart: unless-stopped
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio-data:/data
+    environment:
+      - MINIO_ROOT_USER=${MINIO_ACCESS_KEY:-echo_minio_admin}
+      - MINIO_ROOT_PASSWORD=${MINIO_SECRET_KEY:-echo_minio_secret}
+    command: server /data --console-address ":9001"
+    networks:
+      - echo-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+
+  minio-init:
+    image: ${DOCKER_REGISTRY_PREFIX:-}minio/mc:latest
+    container_name: echo-minio-init
+    depends_on:
+      minio:
+        condition: service_healthy
+    volumes:
+      - ./infrastructure/minio/init.sh:/init.sh
+    entrypoint: ["/bin/sh", "/init.sh"]
+    environment:
+      - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY:-echo_minio_admin}
+      - MINIO_SECRET_KEY=${MINIO_SECRET_KEY:-echo_minio_secret}
+    networks:
+      - echo-network
+    restart: "no"

@@ -1,0 +1,69 @@
+// ============================================================
+// Project Echo — Spring Boot 控制面 Gradle 构建配置
+// 职责: 编排层（任务分发、图谱管理、文件存储），不直接调用 AI 模型
+// ============================================================
+
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.2.5'
+    id 'io.spring.dependency-management' version '1.1.4'
+}
+
+group = 'com.echo'
+version = '0.1.0-SNAPSHOT'
+sourceCompatibility = '17'
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    // 仅使用公开 Maven 仓库，不依赖任何私有云服务
+    mavenCentral()
+}
+
+dependencies {
+    // ── Spring Boot 核心 ──────────────────────────────────
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+    // ── 安全 ─────────────────────────────────────────────
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    // JWT（HS256 本地签发，无第三方身份服务）
+    implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.6'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.6'
+
+    // ── Neo4j 知识图谱 ────────────────────────────────────
+    implementation 'org.springframework.boot:spring-boot-starter-data-neo4j'
+
+    // ── Redis 任务队列 & 缓存 ──────────────────────────────
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    // Jackson 序列化（Redis 值存储用 JSON）
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
+
+    // ── MinIO 本地对象存储客户端 ───────────────────────────
+    implementation 'io.minio:minio:8.5.7'
+    // OkHttp（MinIO 客户端依赖）
+    implementation 'com.squareup.okhttp3:okhttp:4.12.0'
+
+    // ── Lombok ───────────────────────────────────────────
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    // ── 测试 ─────────────────────────────────────────────
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+// 确保编译时输出 UTF-8（中文注释支持）
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
