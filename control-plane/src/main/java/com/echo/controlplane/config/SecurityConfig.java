@@ -41,11 +41,11 @@ public class SecurityConfig {
 
                 if (jwtProperties.isEnabled()) {
                     auth.requestMatchers("/api/**").authenticated();
+                    auth.anyRequest().authenticated();
                 } else {
                     auth.requestMatchers("/api/**").permitAll();
+                    auth.anyRequest().permitAll();
                 }
-
-                auth.anyRequest().authenticated();
             })
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 

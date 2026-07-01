@@ -117,7 +117,8 @@ services:
       context: ./data-plane
       dockerfile: Dockerfile
       args:
-        REGISTRY_PREFIX: ${DOCKER_REGISTRY_PREFIX:-}
+        # 构建基础镜像（temurin/python）建议直连 Docker Hub，勿用 daocloud 前缀
+        REGISTRY_PREFIX: ${DOCKER_BUILD_REGISTRY_PREFIX:-}
     container_name: echo-data-plane
     restart: unless-stopped
     ports:
@@ -166,7 +167,8 @@ services:
       context: ./control-plane
       dockerfile: Dockerfile
       args:
-        REGISTRY_PREFIX: ${DOCKER_REGISTRY_PREFIX:-}
+        # 构建基础镜像（temurin/python）建议直连 Docker Hub，勿用 daocloud 前缀
+        REGISTRY_PREFIX: ${DOCKER_BUILD_REGISTRY_PREFIX:-}
     container_name: echo-control-plane
     restart: unless-stopped
     ports:

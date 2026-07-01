@@ -39,6 +39,7 @@ import java.util.Optional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Transactional(transactionManager = "transactionManager")
 public class GraphService {
 
     private static final String VECTOR_INDEX_NAME = "conversation_embedding";
@@ -59,7 +60,6 @@ public class GraphService {
      * @param relationship 与用户的关系
      * @return 保存后的人物节点
      */
-    @Transactional
     public PersonNode upsertPerson(String name, String relationship) {
         Optional<PersonNode> existing = personRepository.findByName(name);
         if (existing.isPresent()) {
@@ -177,7 +177,6 @@ public class GraphService {
     /**
      * 根据数据面完整回调更新对话节点
      */
-    @Transactional
     public void updateConversationFromCallback(TranscribeCallbackRequest request) {
         String conversationId = request.getConversationId();
         conversationRepository.findByConversationId(conversationId).ifPresent(conv -> {
@@ -205,7 +204,6 @@ public class GraphService {
     /**
      * 写入对话节点的语义向量
      */
-    @Transactional
     public void updateConversationEmbedding(String conversationId, List<Double> embedding) {
         if (embedding == null || embedding.isEmpty()) {
             return;
@@ -226,7 +224,6 @@ public class GraphService {
      * @param summary        AI 摘要（可为 null，不更新）
      * @param status         处理状态
      */
-    @Transactional
     public void updateConversationResult(String conversationId, String transcript,
                                           String summary, String status) {
         conversationRepository.findByConversationId(conversationId).ifPresent(conv -> {
@@ -256,7 +253,6 @@ public class GraphService {
      * @param sentimentScore 情感分数（-1.0 ~ 1.0）
      * @param topics         对话摘要（用于话题提取）
      */
-    @Transactional
     public void updateGraph(String conversationId, String[] participants,
                              double sentimentScore, String topics) {
         if (participants == null || participants.length == 0) {
