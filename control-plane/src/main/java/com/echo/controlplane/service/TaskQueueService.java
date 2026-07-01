@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -41,6 +42,7 @@ import java.util.concurrent.TimeUnit;
 public class TaskQueueService {
 
     private final RedisTemplate<String, Object> redisTemplate;
+    private final StringRedisTemplate stringRedisTemplate;
     private final ObjectMapper objectMapper;
     private final GraphService graphService;
 
@@ -88,8 +90,8 @@ public class TaskQueueService {
     public void submitTranscribeTask(TranscribeTask task) {
         try {
             String taskJson = objectMapper.writeValueAsString(task);
-            // LPUSH 添加到列表头部（数据面 BRPOP 从尾部取，实现 FIFO）
-            redisTemplate.opsForList().leftPush(transcribeQueue, taskJson);
+            // 队列使用 StringRedisTemplate，避免 GenericJackson2JsonRedisSerializer 二次编码
+            stringRedisTemplate.opsForList().leftPush(transcribeQueue, taskJson);
             // 初始化任务元数据
             initTaskMeta(task.getTaskId(), "transcribe", task.getConversationId());
             // 初始化任务状态

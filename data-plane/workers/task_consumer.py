@@ -135,9 +135,11 @@ class TaskConsumer:
         6. HTTP POST 回调控制面
         7. 失败时写入 echo:tasks:failed
         """
-        # 解析任务消息
+        # 解析任务消息（兼容 Java 端曾出现的双重 JSON 编码）
         try:
             task_data = json.loads(task_json)
+            if isinstance(task_data, str):
+                task_data = json.loads(task_data)
             task = TranscribeTaskMessage.model_validate(task_data)
         except Exception as e:
             logger.error("任务反序列化失败: %s\n原始数据: %s", e, task_json[:200])

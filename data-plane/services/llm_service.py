@@ -326,7 +326,8 @@ class LLMService:
         """
         import ollama
 
-        response = ollama.chat(
+        client = ollama.Client(host=self.settings.ollama_base_url)
+        response = client.chat(
             model=self.settings.ollama_model,
             messages=[{"role": "user", "content": prompt}],
             options={

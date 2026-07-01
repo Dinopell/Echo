@@ -130,6 +130,7 @@ services:
       - MINIO_SECRET_KEY=${MINIO_SECRET_KEY:-echo_minio_secret}
       - MINIO_SECURE=false
       - OLLAMA_BASE_URL=http://host.docker.internal:11434
+      - OLLAMA_HOST=http://host.docker.internal:11434
       - WHISPER_MODEL=${WHISPER_MODEL:-base}
       - EMBEDDING_MODEL=${EMBEDDING_MODEL:-BAAI/bge-small-zh-v1.5}
       - LOG_LEVEL=${LOG_LEVEL:-INFO}
