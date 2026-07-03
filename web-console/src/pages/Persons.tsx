@@ -1,35 +1,34 @@
 import { useCallback, useEffect, useState } from 'react';
 import { api } from '../api/client';
+import PageHeader from '../components/PageHeader';
+import EmptyState from '../components/EmptyState';
 import type { Person } from '../types';
+import { formatDate } from '../utils/format';
 
 export default function PersonsPage() {
   const [persons, setPersons] = useState<Person[]>([]);
-  const [network, setNetwork] = useState<Person[]>([]);
   const [selected, setSelected] = useState<Person | null>(null);
+  const [network, setNetwork] = useState<Person[]>([]);
   const [name, setName] = useState('');
   const [relationship, setRelationship] = useState('');
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [saving, setSaving] = useState(false);
 
   const load = useCallback(async () => {
     setError('');
     try {
-      const data = await api.getPersons();
-      setPersons(data);
+      setPersons(await api.getPersons());
     } catch (e) {
       setError(e instanceof Error ? e.message : '加载失败');
     }
   }, []);
 
-  useEffect(() => {
-    load();
-  }, [load]);
+  useEffect(() => { load(); }, [load]);
 
   const selectPerson = async (p: Person) => {
     setSelected(p);
     try {
-      const net = await api.getPersonNetwork(p.name);
-      setNetwork(net);
+      setNetwork(await api.getPersonNetwork(p.name));
     } catch {
       setNetwork([]);
     }
@@ -37,8 +36,7 @@ export default function PersonsPage() {
 
   const addPerson = async () => {
     if (!name.trim()) return;
-    setLoading(true);
-    setError('');
+    setSaving(true);
     try {
       await api.upsertPerson(name.trim(), relationship.trim());
       setName('');
@@ -47,77 +45,85 @@ export default function PersonsPage() {
     } catch (e) {
       setError(e instanceof Error ? e.message : '保存失败');
     } finally {
-      setLoading(false);
+      setSaving(false);
     }
   };
 
   return (
     <>
-      <h2 className="page-title">人物图谱</h2>
-      <p className="page-desc">社交关系网络与人物提及统计</p>
+      <PageHeader title="认识的人" desc="对话里提到的人会自动收录，你也可以手动添加。" />
       {error && <div className="error-banner">{error}</div>}
 
       <div className="card" style={{ marginBottom: '1.5rem' }}>
-        <h3 style={{ marginBottom: '1rem' }}>添加人物</h3>
-        <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-          <div className="form-row" style={{ flex: 1, minWidth: 140, margin: 0 }}>
+        <div className="card-title">添加联系人</div>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr auto', gap: '0.75rem', alignItems: 'end' }}>
+          <div className="form-row" style={{ margin: 0 }}>
             <label>姓名</label>
-            <input className="input" value={name} onChange={(e) => setName(e.target.value)} />
+            <input className="input" value={name} onChange={(e) => setName(e.target.value)} placeholder="张三" />
           </div>
-          <div className="form-row" style={{ flex: 1, minWidth: 140, margin: 0 }}>
+          <div className="form-row" style={{ margin: 0 }}>
             <label>关系</label>
             <input className="input" value={relationship} onChange={(e) => setRelationship(e.target.value)}
-              placeholder="同事 / 朋友 / 家人" />
+              placeholder="同事、朋友、家人…" />
           </div>
-          <button type="button" className="btn btn-primary" style={{ alignSelf: 'end' }}
-            onClick={addPerson} disabled={loading}>保存</button>
+          <button type="button" className="btn btn-primary" onClick={addPerson} disabled={saving}>添加</button>
         </div>
       </div>
 
-      <div className="split">
-        <div className="list">
-          {persons.map((p) => (
-            <div
-              key={p.name}
-              className={`list-item${selected?.name === p.name ? ' selected' : ''}`}
-              onClick={() => selectPerson(p)}
-            >
-              <h4>{p.name}</h4>
-              <div className="meta">
-                <span>{p.relationship || '未标注关系'}</span>
-                <span>提及 {p.mentionCount ?? 0} 次</span>
-                {p.lastSeen && <span>{new Date(p.lastSeen).toLocaleDateString('zh-CN')}</span>}
-              </div>
+      <div className="grid-2">
+        <div>
+          {persons.length === 0 ? (
+            <EmptyState title="还没有人物" hint="对话转写完成后，提及的人物会自动出现；你也可以手动添加。" />
+          ) : (
+            <div className="person-grid">
+              {persons.map((p) => (
+                <div
+                  key={p.name}
+                  className={`person-card${selected?.name === p.name ? ' selected' : ''}`}
+                  onClick={() => selectPerson(p)}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => e.key === 'Enter' && selectPerson(p)}
+                >
+                  <div className="person-avatar">{p.name.charAt(0)}</div>
+                  <h4>{p.name}</h4>
+                  <p>{p.relationship || '未标注关系'}</p>
+                  <p style={{ marginTop: '0.35rem' }}>提及 {p.mentionCount ?? 0} 次</p>
+                </div>
+              ))}
             </div>
-          ))}
-          {persons.length === 0 && <div className="empty">暂无人物节点</div>}
+          )}
         </div>
 
-        <div>
+        <div className="card">
           {selected ? (
-            <div className="card detail-panel">
-              <section>
-                <h3>{selected.name}</h3>
-                <p>关系: {selected.relationship || '—'}</p>
-                <p>提及次数: {selected.mentionCount ?? 0}</p>
-              </section>
-              <section>
-                <h3>关系网络</h3>
-                {network.length === 0 ? (
-                  <p className="empty">暂无关联人物</p>
-                ) : (
-                  <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                    {network.map((n) => (
-                      <li key={n.name} style={{ padding: '0.5rem', background: 'var(--bg)', borderRadius: 8 }}>
-                        {n.name} — {n.relationship || '关联'}（提及 {n.mentionCount ?? 0}）
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </section>
-            </div>
+            <>
+              <div className="card-title">{selected.name} 的关系网</div>
+              {selected.lastSeen && (
+                <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '1rem' }}>
+                  最近提及：{formatDate(selected.lastSeen)}
+                </p>
+              )}
+              {network.length === 0 ? (
+                <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>暂无关联人物</p>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                  {network.map((n) => (
+                    <div key={n.name} style={{
+                      padding: '0.75rem', background: 'var(--bg)', borderRadius: 'var(--radius-sm)',
+                      border: '1px solid var(--border)',
+                    }}>
+                      <strong>{n.name}</strong>
+                      <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginLeft: '0.5rem' }}>
+                        {n.relationship || '关联'}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </>
           ) : (
-            <div className="empty">选择人物查看关系网络</div>
+            <EmptyState title="选择一个人物" hint="点击左侧卡片查看其社交关系网络。" />
           )}
         </div>
       </div>

@@ -1,38 +1,56 @@
 import { useCallback, useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { api } from '../api/client';
+import PageHeader from '../components/PageHeader';
+import { StatusBadge, SentimentBadge } from '../components/StatusBadge';
+import EmptyState from '../components/EmptyState';
 import type { Conversation } from '../types';
+import { formatDateTime, previewText } from '../utils/format';
 
-function ConversationDetail({ c }: { c: Conversation }) {
+function MemoryDetail({ c }: { c: Conversation }) {
   return (
-    <div className="detail-panel card">
-      <section>
-        <h3>元数据</h3>
-        <p>ID: {c.conversationId}</p>
-        <p>状态: <span className={`badge ${c.status}`}>{c.status}</span></p>
-        <p>录制: {c.recordedAt ? new Date(c.recordedAt).toLocaleString('zh-CN') : '—'}</p>
-        {c.sentiment && <p>情感: {c.sentiment}</p>}
-        {c.durationSeconds != null && <p>时长: {c.durationSeconds}s</p>}
-      </section>
+    <article className="memory-detail">
+      <h2>{c.summary || previewText(c)}</h2>
+      <div className="memory-detail-meta">
+        <StatusBadge status={c.status} />
+        <SentimentBadge sentiment={c.sentiment} />
+        <span style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>
+          {formatDateTime(c.recordedAt)}
+        </span>
+        {c.durationSeconds != null && (
+          <span style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>
+            {c.durationSeconds} 秒
+          </span>
+        )}
+      </div>
+
       {c.summary && (
-        <section>
-          <h3>AI 摘要</h3>
+        <div className="detail-block">
+          <h3>摘要</h3>
           <p>{c.summary}</p>
-        </section>
+        </div>
       )}
       {c.transcript && (
-        <section>
+        <div className="detail-block">
           <h3>转写全文</h3>
           <pre>{c.transcript}</pre>
-        </section>
+        </div>
       )}
       {!c.transcript && !c.summary && (
-        <p className="empty">处理中或尚无结果，请稍后刷新</p>
+        <EmptyState title="仍在处理中" hint="转写和摘要完成后会自动出现在这里，请稍后刷新。" />
       )}
-    </div>
+      <details style={{ marginTop: '1rem' }}>
+        <summary style={{ cursor: 'pointer', color: 'var(--text-muted)', fontSize: '0.82rem' }}>技术信息</summary>
+        <p className="tech-id" style={{ marginTop: '0.5rem' }}>ID: {c.conversationId}</p>
+        {c.taskId && <p className="tech-id">任务: {c.taskId}</p>}
+      </details>
+    </article>
   );
 }
 
 export default function ConversationsPage() {
+  const [searchParams] = useSearchParams();
+  const initialId = searchParams.get('id');
   const [days, setDays] = useState(30);
   const [items, setItems] = useState<Conversation[]>([]);
   const [selected, setSelected] = useState<Conversation | null>(null);
@@ -45,55 +63,72 @@ export default function ConversationsPage() {
     try {
       const data = await api.getConversations(days);
       setItems(data);
-      setSelected((prev) => prev ?? data[0] ?? null);
+      setSelected((prev) => {
+        const targetId = prev?.conversationId ?? initialId;
+        if (targetId) {
+          return data.find((c) => c.conversationId === targetId) ?? data[0] ?? null;
+        }
+        return data[0] ?? null;
+      });
     } catch (e) {
       setError(e instanceof Error ? e.message : '加载失败');
     } finally {
       setLoading(false);
     }
-  }, [days]);
+  }, [days, initialId]);
 
-  useEffect(() => {
-    load();
-  }, [load]);
+  useEffect(() => { load(); }, [load]);
 
   return (
     <>
-      <h2 className="page-title">记忆对话</h2>
-      <p className="page-desc">查看转写、摘要与情感标签</p>
+      <PageHeader
+        title="记忆库"
+        desc="你的对话转写、摘要与情感印记。"
+        action={
+          <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+            <select className="select" style={{ width: 'auto' }} value={days}
+              onChange={(e) => setDays(Number(e.target.value))}>
+              <option value={7}>近 7 天</option>
+              <option value={30}>近 30 天</option>
+              <option value={90}>近 90 天</option>
+              <option value={365}>近一年</option>
+            </select>
+            <button type="button" className="btn btn-ghost btn-sm" onClick={load} disabled={loading}>
+              {loading ? '…' : '刷新'}
+            </button>
+          </div>
+        }
+      />
       {error && <div className="error-banner">{error}</div>}
 
-      <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem', alignItems: 'end' }}>
-        <div className="form-row" style={{ margin: 0, maxWidth: 140 }}>
-          <label>最近天数</label>
-          <input className="input" type="number" min={1} max={365} value={days}
-            onChange={(e) => setDays(Number(e.target.value))} />
-        </div>
-        <button type="button" className="btn btn-ghost" onClick={load} disabled={loading}>
-          {loading ? '加载中…' : '刷新'}
-        </button>
-      </div>
-
-      <div className="split">
-        <div className="list">
-          {items.map((c) => (
-            <div
-              key={c.conversationId}
-              className={`list-item${selected?.conversationId === c.conversationId ? ' selected' : ''}`}
-              onClick={() => setSelected(c)}
-            >
-              <h4>{c.summary?.slice(0, 60) || c.transcript?.slice(0, 60) || '（等待处理）'}</h4>
-              <div className="meta">
-                <span className={`badge ${c.status}`}>{c.status}</span>
-                <span>{c.recordedAt ? new Date(c.recordedAt).toLocaleString('zh-CN') : ''}</span>
-                {c.sentiment && <span>{c.sentiment}</span>}
-              </div>
+      {items.length === 0 && !loading ? (
+        <EmptyState title="记忆库是空的" hint="上传录音后，转写和摘要会出现在这里。" actionLabel="上传录音" actionTo="/upload" />
+      ) : (
+        <div className="memory-layout">
+          <div className="memory-list">
+            {items.map((c) => (
+              <button
+                key={c.conversationId}
+                type="button"
+                className={`memory-item${selected?.conversationId === c.conversationId ? ' active' : ''}`}
+                onClick={() => setSelected(c)}
+              >
+                <div className="memory-item-title">{previewText(c)}</div>
+                <div className="memory-item-meta">
+                  <StatusBadge status={c.status} />
+                  <SentimentBadge sentiment={c.sentiment} />
+                  <span>{formatDateTime(c.recordedAt)}</span>
+                </div>
+              </button>
+            ))}
+          </div>
+          {selected ? <MemoryDetail c={selected} /> : (
+            <div className="memory-detail" style={{ display: 'grid', placeItems: 'center' }}>
+              <p style={{ color: 'var(--text-muted)' }}>选择一条记忆查看详情</p>
             </div>
-          ))}
-          {!loading && items.length === 0 && <div className="empty">暂无对话，请先上传音频</div>}
+          )}
         </div>
-        <div>{selected ? <ConversationDetail c={selected} /> : null}</div>
-      </div>
+      )}
     </>
   );
 }
